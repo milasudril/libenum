@@ -4,7 +4,8 @@
         "paths_reject":[
             "..",
             ".",
-            "__targets"
+            "__targets",
+            ".git"
         ],
         "recursive":1
     },
