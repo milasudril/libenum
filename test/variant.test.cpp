@@ -68,6 +68,7 @@ namespace Testcases
 		Client::MyVariantWithMonostate test{1.0f};
 
 		assert(test.index() == Client::TypeId::Float32);
+		assert(test.has_value());
 
 		auto res = Enum::visit([]<class Item>(Item const&)  -> std::string {
 			if constexpr(!std::is_same_v<Item, std::monostate>)
@@ -83,6 +84,7 @@ namespace Testcases
 		Client::MyVariantWithMonostate test{1};
 
 		assert(test.index() == Client::TypeId::Int32);
+		assert(test.has_value());
 
 		auto res = Enum::visit([]<class Item>(Item const&) -> std::string {
 			if constexpr(!std::is_same_v<Item, std::monostate>)
@@ -96,6 +98,7 @@ namespace Testcases
 	void visitMyVariantWithMonostateContainingMonostate()
 	{
 		Client::MyVariantWithMonostate test{};
+		assert(!test.has_value());
 
 		auto res = Enum::visit([]<class Item>(Item const&) -> std::string {
 			if constexpr(!std::is_same_v<Item, std::monostate>)

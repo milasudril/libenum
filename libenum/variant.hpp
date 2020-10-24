@@ -68,15 +68,25 @@ namespace Enum
 		constexpr auto index() const { return add(begin(Empty<EnumType>{}), Base::index() - static_cast<int>(has_hidden_monostate())); }
 
 		template<class Func>
- 		decltype(auto) visit(Func&& f) { return std::visit(std::forward<Func>(f), base()); }
+ 		constexpr decltype(auto) visit(Func&& f) { return std::visit(std::forward<Func>(f), base()); }
 
 		template<class Func>
- 		decltype(auto) visit(Func&& f) const { return std::visit(std::forward<Func>(f), base()); }
+ 		constexpr decltype(auto) visit(Func&& f) const { return std::visit(std::forward<Func>(f), base()); }
 
  		static constexpr auto size() { return std::variant_size_v<Base>;}
 
  		template<index_type i>
  		using variant_alternative = std::variant_alternative_t<distance(begin(Empty<EnumType>{}), i) + static_cast<int>(has_hidden_monostate()), Base>;
+
+		constexpr explicit operator bool() const requires(has_hidden_monostate())
+		{
+			return has_value();
+		}
+
+		constexpr bool has_value() const requires(has_hidden_monostate())
+		{
+			return Base::index() != 0;
+		}
 
 	private:
 		Base const& base() const
