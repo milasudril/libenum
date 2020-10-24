@@ -23,15 +23,18 @@ namespace Enum
 
         template<ContiguousEnum EnumType,
 			template<EnumType> class EnumItemTraits,
-			std::underlying_type_t<EnumType> val>
+			std::underlying_type_t<EnumType> val
+		>
         struct int_to_type:public EnumItemTraits<add(begin(Empty<EnumType>{}), val)>{};
 
-        template <ContiguousEnum EnumType, template<EnumType> class EnumItemTraits, std::underlying_type_t<EnumType>... indices>
-        struct make_variant<EnumType, EnumItemTraits, std::integer_sequence<std::underlying_type_t<EnumType>, indices...> >
-        {
-            using type = std::variant<typename int_to_type<EnumType, EnumItemTraits, indices>::type...>;
-        };
-
+		template <ContiguousEnum EnumType,
+			template<EnumType> class EnumItemTraits,
+			std::underlying_type_t<EnumType>... indices
+		>
+		struct make_variant<EnumType, EnumItemTraits, std::integer_sequence<std::underlying_type_t<EnumType>, indices...> >
+		{
+			using type = std::variant<typename int_to_type<EnumType, EnumItemTraits, indices>::type...>;
+		};
 
 		template<class T, class VariantType, size_t I = std::variant_size_v<VariantType>>
 		struct which
