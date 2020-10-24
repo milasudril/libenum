@@ -3,14 +3,13 @@
 #ifndef LIBENUM_VARIANT_HPP
 #define LIBENUM_VARIANT_HPP
 
-#include <variant>
+#include "./empty.hpp"
+
 #include <type_traits>
+#include <variant>
 
 namespace Enum
 {
-    template<class T>
-    using Empty = std::type_identity<T>;
-
     namespace detail
     {
         template <class EnumType, template<EnumType> class EnumItemTraits, class T=std::make_integer_sequence<std::underlying_type_t<EnumType>, end(Empty<EnumType>{})> >
