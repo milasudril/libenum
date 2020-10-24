@@ -31,6 +31,10 @@ namespace Client
     };
 
     using MyVariant = Enum::Variant<TypeId, TypeInfo>;
+	static_assert(!MyVariant::has_monostate());
+
+	using MyVariantWithMonostate = Enum::Variant<TypeId, TypeInfo, Enum::VariantUseMonostate>;
+	static_assert(MyVariantWithMonostate::has_monostate());
 }
 
 namespace Testcases
@@ -38,6 +42,8 @@ namespace Testcases
 	void visitMyVariantContainingFloat()
 	{
 		Client::MyVariant test{1.0f};
+
+		assert(test.index() == Client::TypeId::Float32);
 
 		auto res = Enum::visit([]<class Item>(Item const&){
 			return std::string{Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name};
@@ -49,11 +55,55 @@ namespace Testcases
 	{
 		Client::MyVariant test{1};
 
+		assert(test.index() == Client::TypeId::Int32);
+
 		auto res = Enum::visit([]<class Item>(Item const&){
 			return std::string{Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name};
 		}, test);
-
 		assert(res == "i32");
+	}
+
+	void visitMyVariantWithMonostateContainingFloat()
+	{
+		Client::MyVariantWithMonostate test{1.0f};
+
+		assert(test.index() == Client::TypeId::Float32);
+
+		auto res = Enum::visit([]<class Item>(Item const&)  -> std::string {
+			if constexpr(!std::is_same_v<Item, std::monostate>)
+			{ return Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name; }
+			else
+			{ return ""; }
+		}, test);
+		assert(res == "f32");
+	}
+
+	void visitMyVariantWithMonostateContainingInt()
+	{
+		Client::MyVariantWithMonostate test{1};
+
+		assert(test.index() == Client::TypeId::Int32);
+
+		auto res = Enum::visit([]<class Item>(Item const&) -> std::string {
+			if constexpr(!std::is_same_v<Item, std::monostate>)
+			{ return Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name; }
+			else
+			{ return ""; }
+		}, test);
+		assert(res == "i32");
+	}
+
+	void visitMyVariantWithMonostateContainingMonostate()
+	{
+		Client::MyVariantWithMonostate test{};
+
+		auto res = Enum::visit([]<class Item>(Item const&) -> std::string {
+			if constexpr(!std::is_same_v<Item, std::monostate>)
+			{ return Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name; }
+			else
+			{ return "Monostate"; }
+		}, test);
+		assert(res == "Monostate");
 	}
 }
 
@@ -61,4 +111,7 @@ int main()
 {
 	Testcases::visitMyVariantContainingFloat();
 	Testcases::visitMyVariantContainingInt();
+	Testcases::visitMyVariantWithMonostateContainingFloat();
+	Testcases::visitMyVariantWithMonostateContainingInt();
+	Testcases::visitMyVariantWithMonostateContainingMonostate();
 }
