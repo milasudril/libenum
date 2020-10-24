@@ -1,4 +1,4 @@
-//@ {"targets":[{"name":"variaint.hpp", "type":"include"}]}
+//@ {"targets":[{"name":"variant.hpp", "type":"include"}]}
 
 #ifndef LIBENUM_VARIANT_HPP
 #define LIBENUM_VARIANT_HPP
