@@ -62,10 +62,10 @@ namespace Enum
 		using Base::Base;
 		using Base::valueless_by_exception;
 
-		static constexpr bool has_monostate()
+		static constexpr bool has_hidden_monostate()
 		{ return std::is_same_v<UseMonostate, VariantUseMonostate>; }
 
-		constexpr auto index() const { return add(begin(Empty<EnumType>{}), Base::index() - static_cast<int>(has_monostate())); }
+		constexpr auto index() const { return add(begin(Empty<EnumType>{}), Base::index() - static_cast<int>(has_hidden_monostate())); }
 
 		template<class Func>
  		decltype(auto) visit(Func&& f) { return std::visit(std::forward<Func>(f), base()); }
@@ -76,7 +76,7 @@ namespace Enum
  		static constexpr auto size() { return std::variant_size_v<Base>;}
 
  		template<index_type i>
- 		using variant_alternative = std::variant_alternative_t<distance(begin(Empty<EnumType>{}), i) + static_cast<int>(has_monostate()), Base>;
+ 		using variant_alternative = std::variant_alternative_t<distance(begin(Empty<EnumType>{}), i) + static_cast<int>(has_hidden_monostate()), Base>;
 
 	private:
 		Base const& base() const

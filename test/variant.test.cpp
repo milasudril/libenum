@@ -31,10 +31,10 @@ namespace Client
     };
 
     using MyVariant = Enum::Variant<TypeId, TypeInfo>;
-	static_assert(!MyVariant::has_monostate());
+	static_assert(!MyVariant::has_hidden_monostate());
 
 	using MyVariantWithMonostate = Enum::Variant<TypeId, TypeInfo, Enum::VariantUseMonostate>;
-	static_assert(MyVariantWithMonostate::has_monostate());
+	static_assert(MyVariantWithMonostate::has_hidden_monostate());
 }
 
 namespace Testcases
