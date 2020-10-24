@@ -1,7 +1,10 @@
+#ifndef LIBENUM_VARIANT_HPP
+#define LIBENUM_VARIANT_HPP
+
 #include <variant>
 #include <type_traits>
 
-namespace Library
+namespace Enum
 {
     template<class T>
     using Empty = std::type_identity<T>;
@@ -24,3 +27,5 @@ namespace Library
     template<class EnumType, template<EnumType> class EnumItemTraits>
     using Variant = typename detail::make_variant<EnumType, EnumItemTraits>::type;
 }
+
+#endif

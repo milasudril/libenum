@@ -7,7 +7,7 @@
 namespace Client
 {
     enum class TypeId:uint8_t{Int32, Float32};
-    constexpr auto end(Library::Empty<TypeId>){return static_cast<std::underlying_type_t<TypeId>>(TypeId::Float32) + 1;}
+    constexpr auto end(Enum::Empty<TypeId>){return static_cast<std::underlying_type_t<TypeId>>(TypeId::Float32) + 1;}
 
     template<TypeId n>
     struct TypeInfo;
@@ -26,7 +26,7 @@ namespace Client
         static constexpr char const* name = "f32";
     };
 
-    using MyVariant = Library::Variant<TypeId, TypeInfo>;
+    using MyVariant = Enum::Variant<TypeId, TypeInfo>;
 }
 
 
