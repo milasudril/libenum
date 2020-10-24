@@ -31,10 +31,27 @@ namespace Enum
         {
             using type = std::variant<typename int_to_type<EnumType, EnumItemTraits, indices>::type...>;
         };
+
+
+		template<class T, class VariantType, size_t I = std::variant_size_v<VariantType>>
+		struct which
+		{
+			static constexpr auto value = std::is_same_v<T, std::variant_alternative_t<I - 1, VariantType>>? I:
+			which<T, VariantType, I - 1>::value;
+		};
+
+		template<class T, class VariantType>
+		struct which<T, VariantType, 0>
+		{
+			static constexpr auto value = -1;
+		};
     }
 
     template<ContiguousEnum EnumType, template<EnumType> class EnumItemTraits>
     using Variant = typename detail::make_variant<EnumType, EnumItemTraits>::type;
+
+    template<class T, class VariantType>
+    constexpr auto WhichV = detail::which<T, VariantType>::value;
 }
 
 #endif
