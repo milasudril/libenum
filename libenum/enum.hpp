@@ -21,7 +21,7 @@ namespace Enum
 
 	/**
 	 * \brief Satisfied if and only if all members of the enum `T` equals `begin(Empty<T>{}) + n`
-	 * where `n` is item number in the enum definition.
+	 * where `n` is item number in the enum definition
 	 *
 	 *     enum class Contiguous:int{Foo = 1, Bar, Baz};
 	 *     enum class NonContiguous:int{Foo = 1, Bar = 3, Baz = 7};
@@ -30,16 +30,22 @@ namespace Enum
 	template<class T>
 	concept ContiguousEnum = std::is_enum_v<T> && detail::is_contiguous_enum<T>();
 
+	/**
+	 * \brief Returns the number of members in `T`
+	*/
 	template<ContiguousEnum T>
 	constexpr auto size(Empty<T>)
 	{
 		return end(Empty<T>{}) - static_cast<std::underlying_type_t<T>>(begin(Empty<T>{}));
 	}
 
+	/**
+	 * \brief Steps `offset` elements and retunrs the result
+	*/
 	template<ContiguousEnum T>
-	constexpr auto add(T base, std::underlying_type_t<T> val)
+	constexpr auto add(T base, std::underlying_type_t<T> offset = 1)
 	{
-		return static_cast<T>(std::underlying_type_t<T>(base) + val);
+		return static_cast<T>(std::underlying_type_t<T>(base) + offset);
 	}
 }
 
