@@ -6,7 +6,7 @@
             ".",
             "__targets"
         ],
-        "recursive":0
+        "recursive":1
     },
     "source_files":[
         "."
