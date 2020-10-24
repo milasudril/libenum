@@ -10,7 +10,7 @@ namespace Client
 {
     enum class TypeId:uint8_t{Int32 = 1, Float32};
 
-    constexpr auto end(Enum::Empty<TypeId>){return static_cast<std::underlying_type_t<TypeId>>(TypeId::Float32) + 1;}
+    constexpr auto end(Enum::Empty<TypeId>){return Enum::add(TypeId::Float32, 1);}
     constexpr auto begin(Enum::Empty<TypeId>){return TypeId::Int32;}
 
     template<TypeId n>
@@ -39,9 +39,9 @@ namespace Testcases
 	{
 		Client::MyVariant test{1.0f};
 
-		auto res = visit([]<class Item>(Item const&){
-			return std::string{Client::TypeInfo<static_cast<Client::TypeId>(Enum::WhichV<Item, Client::MyVariant>)>::name};
-		},test);
+		auto res = Enum::visit([]<class Item>(Item const&){
+			return std::string{Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name};
+		}, test);
 		assert(res == "f32");
 	}
 
@@ -49,9 +49,9 @@ namespace Testcases
 	{
 		Client::MyVariant test{1};
 
-		auto res = visit([]<class Item>(Item const&){
-			return std::string{Client::TypeInfo<static_cast<Client::TypeId>(Enum::WhichV<Item, Client::MyVariant>)>::name};
-		},test);
+		auto res = Enum::visit([]<class Item>(Item const&){
+			return std::string{Client::TypeInfo<Enum::WhichV<Item, Client::MyVariant>>::name};
+		}, test);
 
 		assert(res == "i32");
 	}

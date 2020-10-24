@@ -6,6 +6,7 @@
 #include "./empty.hpp"
 
 #include <type_traits>
+#include <cstddef>
 
 namespace Enum
 {
@@ -31,21 +32,21 @@ namespace Enum
 	concept ContiguousEnum = std::is_enum_v<T> && detail::is_contiguous_enum<T>();
 
 	/**
-	 * \brief Returns the number of members in `T`
-	*/
-	template<ContiguousEnum T>
-	constexpr auto size(Empty<T>)
-	{
-		return end(Empty<T>{}) - static_cast<std::underlying_type_t<T>>(begin(Empty<T>{}));
-	}
-
-	/**
 	 * \brief Steps `offset` elements and retunrs the result
 	*/
 	template<ContiguousEnum T>
 	constexpr auto add(T base, std::underlying_type_t<T> offset = 1)
 	{
 		return static_cast<T>(std::underlying_type_t<T>(base) + offset);
+	}
+
+	/**
+	 * \brief Difference between two enum values
+	*/
+	template<ContiguousEnum T>
+	constexpr auto distance(T begin, T end)
+	{
+		return static_cast<std::ptrdiff_t>(end) - static_cast<std::ptrdiff_t>(begin);
 	}
 }
 
