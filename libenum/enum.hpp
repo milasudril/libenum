@@ -29,7 +29,7 @@ namespace Enum
 	 *
 	*/
 	template<class T>
-	concept ContiguousEnum = std::is_enum_v<T> && detail::is_contiguous_enum<T>();
+	concept ContiguousEnum = std::is_enum_v<T>&& detail::is_contiguous_enum<T>();
 
 	/**
 	 * \brief Steps `offset` elements and retunrs the result

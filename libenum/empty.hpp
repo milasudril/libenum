@@ -17,8 +17,8 @@ namespace Enum
 	 *
 	 * will find a `do_stuff` implementation in namespace `foo`.
 	 */
-    template<class T>
-    using Empty = std::type_identity<T>;
+	template<class T>
+	using Empty = std::type_identity<T>;
 }
 
 #endif
