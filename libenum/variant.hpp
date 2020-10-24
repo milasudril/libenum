@@ -101,21 +101,24 @@ namespace Enum
 			static constexpr auto Index = I - 1;
 			static constexpr auto EnumVal = add(begin(Empty<typename VariantType::index_type>{}), Index);
 			using CurrentAlternative = typename VariantType::variant_alternative<EnumVal>;
-		public:
-			static constexpr auto value = std::is_same_v<T, CurrentAlternative>?
-			 EnumVal : which<T, VariantType, Index>::value;
-		};
 
-		template<class T, class VariantType>
-		class which<T, VariantType, 0>
-		{
 		public:
-			static constexpr typename VariantType::index_type value{0};
+			static constexpr auto value() requires(Index != 0 && !std::is_same_v<T, CurrentAlternative>)
+			{
+				return which<T, VariantType, Index>::value();
+			}
+
+			static constexpr auto value() requires(std::is_same_v<T, CurrentAlternative>)
+			{
+				return EnumVal;
+			}
+
+			static constexpr auto value() requires(Index == 0 && !std::is_same_v<T, CurrentAlternative>) = delete;
 		};
 	}
 
     template<class T, class VariantType>
-    constexpr auto WhichV = detail::which<T, VariantType>::value;
+    constexpr auto WhichV = detail::which<T, VariantType>::value();
 
 }
 
