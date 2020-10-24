@@ -6,8 +6,9 @@
 
 namespace Client
 {
-    enum class TypeId:uint8_t{Int32, Float32};
+    enum class TypeId:uint8_t{Int32 = 1, Float32};
     constexpr auto end(Enum::Empty<TypeId>){return static_cast<std::underlying_type_t<TypeId>>(TypeId::Float32) + 1;}
+    constexpr auto begin(Enum::Empty<TypeId>){return TypeId::Int32;}
 
     template<TypeId n>
     struct TypeInfo;

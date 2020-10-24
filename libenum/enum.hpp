@@ -1,7 +1,9 @@
-//@ {"targets":[{"name":"enum_concepts.hpp", "type":"include"}]}
+//@ {"targets":[{"name":"enum.hpp", "type":"include"}]}
 
-#ifndef LIBENUM_ENUMCONCEPTS_HPP
-#define LIBENUM_ENUMCONCEPTS_HPP
+#ifndef LIBENUM_ENUM_HPP
+#define LIBENUM_ENUM_HPP
+
+#include "./empty.hpp"
 
 #include <type_traits>
 
@@ -27,6 +29,18 @@ namespace Enum
 	*/
 	template<class T>
 	concept ContiguousEnum = std::is_enum_v<T> && detail::is_contiguous_enum<T>();
+
+	template<ContiguousEnum T>
+	constexpr auto size(Empty<T>)
+	{
+		return end(Empty<T>{}) - static_cast<std::underlying_type_t<T>>(begin(Empty<T>{}));
+	}
+
+	template<ContiguousEnum T>
+	constexpr auto add(T base, std::underlying_type_t<T> val)
+	{
+		return static_cast<T>(std::underlying_type_t<T>(base) + val);
+	}
 }
 
 #endif
