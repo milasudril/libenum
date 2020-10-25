@@ -154,7 +154,7 @@ namespace Enum
 		return var.visit(std::forward<Func>(func));
 	}
 
-		template<class T,
+	template<class T,
 	         ContiguousEnum EnumType,
 	         template<EnumType>
 	         class EnumItemTraits,
