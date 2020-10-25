@@ -48,7 +48,4 @@ namespace Testcases
 	}
 }
 
-int main()
-{
-	Testcases::getStuffFromMyTuple();
-}
+int main() { Testcases::getStuffFromMyTuple(); }
