@@ -116,6 +116,18 @@ namespace Enum
 			return Base::index() != 0;
 		}
 
+		template<class T>
+		constexpr T const* get_if() const
+		{
+			return std::get_if<T>(&base());
+		}
+
+		template<class T>
+		constexpr T* get_if()
+		{
+			return std::get_if<T>(&base());
+		}
+
 	private:
 		Base const& base() const { return *this; }
 
@@ -140,6 +152,26 @@ namespace Enum
 	decltype(auto) visit(Func&& func, Variant<EnumType, EnumItemTraits, UseMonostate>& var)
 	{
 		return var.visit(std::forward<Func>(func));
+	}
+
+		template<class T,
+	         ContiguousEnum EnumType,
+	         template<EnumType>
+	         class EnumItemTraits,
+	         class UseMonostate = void>
+	decltype(auto) get_if(Variant<EnumType, EnumItemTraits, UseMonostate> const* var)
+	{
+		return var->template get_if<T>();
+	}
+
+	template<class T,
+	         ContiguousEnum EnumType,
+	         template<EnumType>
+	         class EnumItemTraits,
+	         class UseMonostate = void>
+	decltype(auto) visit(Variant<EnumType, EnumItemTraits, UseMonostate>* var)
+	{
+		return var->template get_if<T>();
 	}
 
 	namespace detail
