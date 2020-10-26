@@ -1,7 +1,7 @@
 //@ {"targets":[{"name":"empty.hpp", "type":"include"}]}
 
-#ifndef LIBENUM_EMPTY_HPP
-#define LIBENUM_EMPTY_HPP
+#ifndef TEXPAINTER_LIBENUM_LIBENUM_EMPTY_HPP
+#define TEXPAINTER_LIBENUM_LIBENUM_EMPTY_HPP
 
 #include <type_traits>
 

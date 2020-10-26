@@ -1,7 +1,7 @@
 //@ {"targets":[{"name":"variant.hpp", "type":"include"}]}
 
-#ifndef LIBENUM_VARIANT_HPP
-#define LIBENUM_VARIANT_HPP
+#ifndef TEXPAINTER_LIBENUM_LIBENUM_VARIANT_HPP
+#define TEXPAINTER_LIBENUM_LIBENUM_VARIANT_HPP
 
 #include "./empty.hpp"
 #include "./enum.hpp"
@@ -17,13 +17,6 @@ namespace Enum
 
 	namespace detail
 	{
-		template<ContiguousEnum EnumType>
-		struct Size
-		{
-			static constexpr auto value =
-			    distance(begin(Empty<EnumType>{}), end(Empty<EnumType>{}));
-		};
-
 		template<class UseMonostate,
 		         ContiguousEnum EnumType,
 		         template<EnumType>
@@ -33,14 +26,6 @@ namespace Enum
 		             Size<EnumType>::value  // NOTE: calling distance here triggers ICE in gcc 10.2
 		             >>
 		struct make_variant;
-
-		template<ContiguousEnum EnumType,
-		         template<EnumType>
-		         class EnumItemTraits,
-		         std::underlying_type_t<EnumType> val>
-		struct int_to_type: public EnumItemTraits<add(begin(Empty<EnumType>{}), val)>
-		{
-		};
 
 		template<class UseMonostate,
 		         ContiguousEnum EnumType,

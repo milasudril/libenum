@@ -1,7 +1,7 @@
 //@ {"targets":[{"name":"tuple.hpp", "type":"include"}]}
 
-#ifndef LIBENUM_TUPLE_HPP
-#define LIBENUM_TUPLE_HPP
+#ifndef TEXPAINTER_LIBENUM_LIBENUM_TUPLE_HPP
+#define TEXPAINTER_LIBENUM_LIBENUM_TUPLE_HPP
 
 #include "./empty.hpp"
 #include "./enum.hpp"
@@ -13,13 +13,6 @@ namespace Enum
 {
 	namespace detail
 	{
-		template<ContiguousEnum EnumType>
-		struct Size
-		{
-			static constexpr auto value =
-			    distance(begin(Empty<EnumType>{}), end(Empty<EnumType>{}));
-		};
-
 		template<ContiguousEnum EnumType,
 		         template<EnumType>
 		         class EnumItemTraits,
@@ -28,14 +21,6 @@ namespace Enum
 		             Size<EnumType>::value  // NOTE: calling distance here triggers ICE in gcc 10.2
 		             >>
 		struct make_tuple;
-
-		template<ContiguousEnum EnumType,
-		         template<EnumType>
-		         class EnumItemTraits,
-		         std::underlying_type_t<EnumType> val>
-		struct int_to_type: public EnumItemTraits<add(begin(Empty<EnumType>{}), val)>
-		{
-		};
 
 		template<ContiguousEnum EnumType,
 		         template<EnumType>
@@ -83,6 +68,31 @@ namespace Enum
 
 		Base& base() { return *this; }
 	};
-}
 
+	namespace detail
+	{
+		template<auto types,
+		         template<auto>
+		         class EnumItemTraits,
+		         class T = std::make_integer_sequence<size_t, types.size()>>
+		struct make_tuple_from_array;
+
+		template<auto types, template<auto> class EnumItemTraits, size_t index>
+		struct int_to_type_array: public EnumItemTraits<types[index]>
+		{
+		};
+
+		template<auto types, template<auto> class EnumItemTraits, size_t... indices>
+		struct make_tuple_from_array<types,
+		                             EnumItemTraits,
+		                             std::integer_sequence<size_t, indices...>>
+		{
+			using type =
+			    std::tuple<typename int_to_type_array<types, EnumItemTraits, indices>::type...>;
+		};
+	}
+
+	template<auto types, template<auto> class EnumItemTraits>
+	using TupleFromTypeArray = detail::make_tuple_from_array<types, EnumItemTraits>::type;
+}
 #endif

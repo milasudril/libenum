@@ -1,7 +1,7 @@
 //@ {"targets":[{"name":"enum.hpp", "type":"include"}]}
 
-#ifndef LIBENUM_ENUM_HPP
-#define LIBENUM_ENUM_HPP
+#ifndef TEXPAINTER_LIBENUM_LIBENUM_ENUM_HPP
+#define TEXPAINTER_LIBENUM_LIBENUM_ENUM_HPP
 
 #include "./empty.hpp"
 
@@ -48,6 +48,29 @@ namespace Enum
 	{
 		return static_cast<std::ptrdiff_t>(end) - static_cast<std::ptrdiff_t>(begin);
 	}
+
+	namespace detail
+	{
+		template<ContiguousEnum EnumType>
+		struct Size
+		{
+			static constexpr auto value =
+			    distance(begin(Empty<EnumType>{}), end(Empty<EnumType>{}));
+		};
+
+
+		/**
+		 * \brief Helper to pull in all members from `EnumItemTraits<>`
+		 */
+		template<ContiguousEnum EnumType,
+		         template<EnumType>
+		         class EnumItemTraits,
+		         std::underlying_type_t<EnumType> val>
+		struct int_to_type: public EnumItemTraits<add(begin(Empty<EnumType>{}), val)>
+		{
+		};
+	}
+
 }
 
 #endif
