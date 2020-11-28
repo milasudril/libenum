@@ -33,6 +33,35 @@ namespace Enum
 			using type =
 			    std::tuple<typename int_to_type<EnumType, EnumItemTraits, indices>::type...>;
 		};
+
+
+		template<typename... Ts>
+		struct tag
+		{
+		};
+
+		template<typename Tuple>
+		struct tag_from_tuple;
+		template<typename Tuple>
+		using tag_from_tuple_t = typename tag_from_tuple<Tuple>::type;
+
+		template<typename... Ts>
+		struct tag_from_tuple<std::tuple<Ts...>>
+		{
+			using type = tag<Ts...>;
+		};
+
+		template<typename T, typename... Ts>
+		std::tuple<Ts...> make_tuple_from_impl(T&& t, tag<Ts...>)
+		{
+			return {Ts{std::forward<T>(t)}...};
+		}
+	}
+
+	template<typename Tuple, typename T>
+	Tuple makeTupleFrom(T&& t)
+	{
+		return detail::make_tuple_from_impl(std::forward<T>(t), detail::tag_from_tuple_t<Tuple>{});
 	}
 
 	template<ContiguousEnum EnumType, template<EnumType> class EnumItemTraits>
@@ -45,6 +74,11 @@ namespace Enum
 		using traits = EnumItemTraits<index>;
 
 		using Base::Base;
+
+		template<class T>
+		explicit Tuple(T&& obj): Base{makeTupleFrom<Base>(std::forward<T>(obj))}
+		{
+		}
 
 		static constexpr auto size() { return std::tuple_size_v<Base>; }
 

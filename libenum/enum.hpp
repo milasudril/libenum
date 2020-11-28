@@ -20,6 +20,14 @@ namespace Enum
 		}
 	}
 
+	template<auto Id>
+	struct Tag
+	{
+		static constexpr auto value = Id;
+		using value_type            = decltype(Id);
+	};
+
+
 	/**
 	 * \brief Satisfied if and only if all members of the enum `T` equals `begin(Empty<T>{}) + n`
 	 * where `n` is item number in the enum definition
@@ -71,6 +79,31 @@ namespace Enum
 		};
 	}
 
+	namespace detail
+	{
+		template<auto enum_item>
+		struct VisitEnumItem
+		{
+			using EnumType = decltype(enum_item);
+
+			template<class Function>
+			constexpr static void process(Function&& f)
+			{
+				constexpr auto current_id = add(enum_item, -1);
+				if constexpr(current_id != begin(Empty<EnumType>{}))
+				{ VisitEnumItem<current_id>::process(f); }
+				f(Tag<current_id>{});
+			}
+		};
+	}
+
+	/** Calls `f` on each item in EnumType
+	*/
+	template<class EnumType, class Function>
+	constexpr void forEachEnumItem(Function&& f)
+	{
+		detail::VisitEnumItem<end(Empty<EnumType>{})>::process(f);
+	}
 }
 
 #endif
