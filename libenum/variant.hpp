@@ -154,7 +154,7 @@ namespace Enum
 	         template<EnumType>
 	         class EnumItemTraits,
 	         class UseMonostate = void>
-	decltype(auto) visit(Variant<EnumType, EnumItemTraits, UseMonostate>* var)
+	decltype(auto) get_if(Variant<EnumType, EnumItemTraits, UseMonostate>* var)
 	{
 		return var->template get_if<T>();
 	}
