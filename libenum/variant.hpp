@@ -68,7 +68,7 @@ namespace Enum
 		constexpr auto index() const
 		{
 			return add(begin(Empty<EnumType>{}),
-			           Base::index() - static_cast<int>(has_hidden_monostate()));
+			           static_cast<std::underlying_type_t<EnumType>>(Base::index() - static_cast<int>(has_hidden_monostate())));
 		}
 
 		template<class Func>
