@@ -68,17 +68,24 @@ namespace Enum
 		constexpr auto index() const
 		{
 			return add(begin(Empty<EnumType>{}),
-			           static_cast<std::underlying_type_t<EnumType>>(Base::index() - static_cast<int>(has_hidden_monostate())));
+			           static_cast<std::underlying_type_t<EnumType>>(
+			               Base::index() - static_cast<int>(has_hidden_monostate())));
 		}
 
 		template<class Func>
-		constexpr decltype(auto) visit(Func&& f)
+		constexpr decltype(auto) visit(Func&& f) &
 		{
 			return std::visit(std::forward<Func>(f), base());
 		}
 
 		template<class Func>
-		constexpr decltype(auto) visit(Func&& f) const
+		constexpr decltype(auto) visit(Func&& f) &&
+		{
+			return std::visit(std::forward<Func>(f), std::move(base()));
+		}
+
+		template<class Func>
+		constexpr decltype(auto) visit(Func&& f) const&
 		{
 			return std::visit(std::forward<Func>(f), base());
 		}
@@ -127,6 +134,16 @@ namespace Enum
 	decltype(auto) visit(Func&& func, Variant<EnumType, EnumItemTraits, UseMonostate> const& var)
 	{
 		return var.visit(std::forward<Func>(func));
+	}
+
+	template<class Func,
+	         ContiguousEnum EnumType,
+	         template<EnumType>
+	         class EnumItemTraits,
+	         class UseMonostate = void>
+	decltype(auto) visit(Func&& func, Variant<EnumType, EnumItemTraits, UseMonostate>&& var)
+	{
+		return std::move(var).visit(std::forward<Func>(func));
 	}
 
 	template<class Func,
