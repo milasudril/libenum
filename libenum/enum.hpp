@@ -106,11 +106,13 @@ namespace Enum
 			{
 				if constexpr(enum_item == end(Empty<EnumType>{}))
 				{ return enum_item; }
+				else
+				{
+					if(f(Tag<enum_item>{}))
+					{ return enum_item; }
 
-				if(f(Tag<enum_item>{}))
-				{ return enum_item; }
-
-				return FindIfEnumItem<add(enum_item, 1)>::process(f);
+					return FindIfEnumItem<add(enum_item, 1)>::process(f);
+				}
 			}
 		};
 	}
