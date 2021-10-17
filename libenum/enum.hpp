@@ -102,16 +102,16 @@ namespace Enum
 			using EnumType = decltype(enum_item);
 
 			template<class Function>
-			constexpr static bool process(Function&& f)
+			constexpr static auto process(Function&& f)
 			{
 				constexpr auto current_id = add(enum_item, -1);
 				if(f(Tag<current_id>{}))
 				{
-					return true;
+					return current_id;
 				}
 
 				if constexpr(current_id != begin(Empty<EnumType>{}))
-				{ FindIfEnumItem<current_id>::process(f); }
+				{ return FindIfEnumItem<current_id>::process(f); }
 			}
 		};
 	}
@@ -125,7 +125,7 @@ namespace Enum
 	}
 
 	template<class EnumType, class Function>
-	constexpr bool findIfEnumItem(Function&& f)
+	constexpr auto findIfEnumItem(Function&& f)
 	{
 		return detail::FindIfEnumItem<end(Empty<EnumType>{})>::process(f);
 	}
