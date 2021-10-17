@@ -95,6 +95,25 @@ namespace Enum
 				f(Tag<current_id>{});
 			}
 		};
+
+		template<auto enum_item>
+		struct FindIfEnumItem
+		{
+			using EnumType = decltype(enum_item);
+
+			template<class Function>
+			constexpr static bool process(Function&& f)
+			{
+				constexpr auto current_id = add(enum_item, -1);
+				if(f(Tag<current_id>{}))
+				{
+					return true;
+				}
+
+				if constexpr(current_id != begin(Empty<EnumType>{}))
+				{ FindIfEnumItem<current_id>::process(f); }
+			}
+		};
 	}
 
 	/** Calls `f` on each item in EnumType
@@ -103,6 +122,12 @@ namespace Enum
 	constexpr void forEachEnumItem(Function&& f)
 	{
 		detail::VisitEnumItem<end(Empty<EnumType>{})>::process(f);
+	}
+
+	template<class EnumType, class Function>
+	constexpr bool findIfEnumItem(Function&& f)
+	{
+		return detail::FindIfEnumItem<end(Empty<EnumType>{})>::process(f);
 	}
 }
 
